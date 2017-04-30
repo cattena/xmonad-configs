@@ -52,12 +52,12 @@ myModMask           = mod4Mask
 -- Layout names and quick access keys --¬
 ------------------------------------------------------------------------
 
-myWorkspaces = clickable . (map dzenEscape) $ ["main",
-                                               "web",
-                                               "media",
-                                               "misc",
-                                               "view",
-                                               "latex"]
+myWorkspaces = clickable . (map dzenEscape) $ ["Pr1nc1p4l",
+                                               "W3b",
+                                               "M3d14",
+                                               "M1sc",
+                                               "V1st4s",
+                                               "R3d4cc10n"]
     where clickable l = [ x ++ ws ++ "^ca()" | 
 --                        (i,ws) <- zip ['1','2','3','q','w','e'] l,
                         (i,ws) <- zip ['1','2','3','4','5','6'] l,
@@ -108,8 +108,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 	, ((modm 			  , xK_n 	 ), spawn "urxvt -e ncmpcpp")
     , ((modm 			  , xK_m     ), spawn "/home/carlos/Scripts/bin/mpd/launchMPD.sh")
     , ((modm .|. shiftMask, xK_m     ), spawn "/home/carlos/Scripts/bin/mpd/stopMPD.sh")
-    , ((0, 0x1008ff11), spawn "amixer -q set Master 5%- unmute")    	-- Alsa Multimedia Control
-    , ((0, 0x1008ff13), spawn "amixer -q set Master 5%+ unmute")
+    -- Alsa Multimedia Control
+    , ((0, 0x1008ff11), spawn "~/.xmonad/Scripts/voltctl down")
+    , ((0, 0x1008ff13), spawn "~/.xmonad/Scripts/voltctl up")
+    , ((0, 0x1008ff12), spawn "~/.xmonad/Scripts/voltctl toggle")
+
+--    , ((0, 0x1008ff11), spawn "amixer -q set Master 5%- unmute")
+--    , ((0, 0x1008ff13), spawn "amixer -q set Master 5%+ unmute")
 --    , ((0, 0x1008ff12), spawn "amixer -q set Master toggle")
 --    , ((0, 0x1008ff03), spawn "xbacklight -dec 20")    					-- Brightness Control
 --    , ((0, 0x1008ff02), spawn "xbacklight -inc 20")
