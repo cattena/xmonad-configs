@@ -1,0 +1,15 @@
+#!/bin/bash
+
+NORML_COLOR=''
+HIGHL_COLOR='^fg(red)'
+ICON='^i(/home/carlos/.xmonad/dzen/icons/xbm8x8/mail.xbm)'
+NUM=$(cat ~/.cache/pymail/inbox)
+
+if [[ $NUM -ge 1 ]]
+then
+	echo "$HIGHL_COLOR $ICON $NUM"
+else
+	echo "$ICON $NUM"
+fi
+
+python ~/.xmonad/Scripts/imapmail.py | tail -n 1 > ~/.cache/pymail/inbox &
