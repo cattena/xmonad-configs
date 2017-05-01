@@ -7,12 +7,9 @@
 #dropboxd &
 
 #Wallpaper
-#nitrogen --restore &
-
-#Screensaver
-#xscreensaver -no-splash &
+nitrogen --restore &
 
 #Notif Daemon
-#dunst -config ~/.dunstrc
+dunst -config ~/.dunstrc
 
 
