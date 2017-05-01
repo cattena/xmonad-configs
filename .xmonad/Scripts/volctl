@@ -13,10 +13,10 @@
 pipe='/tmp/volpipe'
 
 # define some arguments passed to dzen to determine size and color.
-dzen_args=( -tw 165 -h 20 -x 600 -y 50 -bg '#101010' )
+dzen_args=( -tw 165 -h 20 -x 20 -y 40 -bg '#000000' )
 
 # similarly for gdbar
-gdbar_args=( -w 150 -h 3 -fg '#ffffff' -bg '#404040' )
+gdbar_args=( -w 150 -h 4 -fg '#21587C' -bg '#000000' )
 
 # spawn dzen reading from the pipe (unless it's in mid-action already).
 if [[ ! -e "$pipe" ]]; then

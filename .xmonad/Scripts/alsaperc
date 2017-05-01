@@ -3,23 +3,23 @@
 #
 #     Scripts/alsaperc
 #     Description: Script for piping the alsa status into dzen
-#     Author: carlos Sánchez <kniren@gmail.com>
+#     Author: Alex Sánchez <kniren@gmail.com>
 #
 # ------------------------------------------------------------------
 
-AMASTER=`amixer get Master | awk 'END{gsub(/\[|\]|%/,""); print $4}'`
+AMASTER=`amixer get Master | awk 'END{gsub(/\[|\]|%/,""); print $5}'`
 ASTAT=`amixer get Master | awk 'END{gsub(/\[|\]|%/,""); print $6}'`
 ICON=""
 
 if [[ $ASTAT = "on" ]]; then
     ICON="spkr_01.xbm"
     PERCBAR=`echo -e "$AMASTER"\
-        | gdbar -bg darkgrey -fg white -h 5 -w 50`
+        | gdbar -bg "#393939" -fg "#A6A6A6" -h 3 -w 50`
 else
     ICON="spkr_02.xbm"
-    PERCBAR=`echo 0 \
-        | gdbar -bg darkgrey -fg white -h 5 -w 50`
+    PERCBAR=`echo 0\
+        | gdbar -bg "#393939" -fg "#A6A6A6" -h 3 -w 50`
 fi
 
-ICON='^i(/home/carlos/.xmonad/dzen/icons/xbm8x8/'"$ICON)"
+ICON='^i(/home/arietux/.xmonad/dzen/icons/xbm8x8/'"$ICON)"
 echo "$ICON $PERCBAR"
