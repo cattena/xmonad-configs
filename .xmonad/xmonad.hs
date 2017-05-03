@@ -24,11 +24,11 @@ import qualified Data.Map as M
 ---
 --- General options
 ---
-myTerminal 		= "terminator"
+myTerminal 		= "urxvt"
 myModMask  		= mod4Mask
 myNormalBorderColor 	= "#121212"
 myFocusedBorderColor 	= "#435d75"
-myBorderWidth 		= 1
+myBorderWidth 		= 2
 
 ---
 --- dzen Dock
@@ -55,9 +55,9 @@ myPP = dzenPP
       , ppSep               =   " | "
       , ppLayout            =   dzenColor "#435d75" "#000000" .
             (\x -> case x of
-                "Spacing 1 Tall"        -> clickInLayout ++ "^i(/home/carlos/.xmonad/dzen/icons/stlarch/tile.xbm)^ca()"
+                "Spacing 0 Tall"        -> clickInLayout ++ "^i(/home/carlos/.xmonad/dzen/icons/stlarch/tile.xbm)^ca()"
                 "Tall"                  -> clickInLayout ++ "^i(/home/carlos/.xmonad/dzen/icons/stlarch/monocle.xbm)^ca()"
-                "Mirror Spacing 1 Tall" -> clickInLayout ++ "^i(/home/carlos/.xmonad/dzen/icons/stlarch/bstack.xbm)^ca()"
+                "Mirror Spacing 0 Tall" -> clickInLayout ++ "^i(/home/carlos/.xmonad/dzen/icons/stlarch/bstack.xbm)^ca()"
                 "Full"                  -> clickInLayout ++ "^i(/home/carlos/.xmonad/dzen/icons/stlarch/monocle2.xbm)^ca()"
                 _                       -> x
             )
@@ -73,7 +73,7 @@ clickInLayout = "^ca(1,xdotool key super+space)"
 ---
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ 
-    ((modm,xK_p), spawn "dmenu_run -i -fn 'profont-12' -sb '#435d75' -nb '#000000'") -- launch dmenu
+    ((modm,xK_p), spawn "dmenu_run -i -fn 'profont-10' -sb '#435d75' -nb '#000000'") -- launch dmenu
     , ((modm .|. shiftMask, xK_c     ), kill)    						-- Close focused window
     , ((modm,               xK_space ), sendMessage NextLayout) 		-- Rotate through the available layout algorithmsv
     , ((modm,               xK_Tab   ), windows W.focusDown)    		-- Change Focused Windows
@@ -144,23 +144,73 @@ myWorkspaces = ["Principal","www","Media","Misc","Vistas","Redacs"]
 --- Layouts
 ---
 myLayout = mkToggle (NOBORDERS ?? FULL ?? EOT) $
-	   avoidStruts $
-	   webLayout $
+           avoidStruts $
+           onWorkspace (myWorkspaces !! 2) webLayout $
+           onWorkspace (myWorkspaces !! 5) vistasLayout $
            standardLayout
     where
      standardLayout = tiled     ||| mirrorTiled ||| fullTiled ||| noBor
      var1Layout     = fullTiled ||| tiled       ||| noBor
-     webLayout      = onWorkspace (myWorkspaces !! 1) var1Layout
+     webLayout      = var1Layout
      fullTiled      = Tall nmaster delta (1/4)
-     mirrorTiled    = Mirror . spacing 1 $ Tall nmaster delta ratio
+     mirrorTiled    = Mirror . spacing 0 $ Tall nmaster delta ratio
      noBor          = noBorders (fullscreenFull Full)
-     tiled          = spacing 1 $ Tall nmaster delta ratio
+     vistasLayout   = webLayout
+     tiled          = spacing 0 $ Tall nmaster delta ratio
      -- The default number of windows in the master pane
      nmaster = 1
      -- Percent of screen to increment by when resizing panes
      delta   = 5/100
      -- Default proportion of screen occupied by master pane
      ratio   = 1/2      
+
+---
+--- Window rules 
+---
+-- To find the property name associated with a program, use xprop | grep WM_CLASS
+-- and click on the client you're interested in.
+--
+-- To match on the WM_NAME, you can use 'title' in the same way that
+-- 'className' and 'resource' are used below.
+
+myManageHook = manageDocks <+> composeAll
+    [ className =? "MPlayer"             --> doFloat
+    , className =? "MPlayer"             --> doShift (myWorkspaces !! 2)
+    , className =? "Gimp"                --> doFloat
+    , className =? "Gimp"                --> doShift (myWorkspaces !! 2)
+    , className =? "Nautilus"            --> doShift (myWorkspaces !! 3)
+    , className =? "Zathura"             --> doShift (myWorkspaces !! 2)
+    , className =? "Dwb"                 --> doShift (myWorkspaces !! 1)
+    , className =? "Chromium"            --> doShift (myWorkspaces !! 1)
+    , className =? "Firefox"             --> doShift (myWorkspaces !! 1)
+    , className =? "Google-chrome"       --> doShift (myWorkspaces !! 1)
+    , className =? "Eclipse"             --> doShift (myWorkspaces !! 5)
+    , className =? "processing-app-Base" --> doShift (myWorkspaces !! 4)
+    , className =? "processing-app-Base" --> doFloat
+    , resource  =? "desktop_window"      --> doIgnore
+    , resource  =? "kdesktop"            --> doIgnore  
+    , isFullscreen --> doFullFloat ]
+
+
+---
+--- Mouse bindings
+---
+myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
+
+    -- mod-button1, Set the window to floating mode and move by dragging
+    [ ((modm, button1), (\w -> focus w >> mouseMoveWindow w
+                                       >> windows W.shiftMaster))
+
+    -- mod-button2, Raise the window to the top of the stack
+    , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
+
+    -- mod-button3, Set the window to floating mode and resize by dragging
+    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w
+                                       >> windows W.shiftMaster))
+
+    -- you may also bind events to the mouse scroll wheel (button4 and button5)
+    ]
+
 
 ---
 --- Event handling
@@ -192,9 +242,11 @@ myConfig = desktopConfig {
     focusedBorderColor 		= myFocusedBorderColor,
     workspaces 			= myWorkspaces,
     keys 			= myKeys,
+    mouseBindings 		= myMouseBindings,
     layoutHook 			= smartBorders(myLayout),
 --    startupHook 		= myStartupHook,
 --    logHook 			= dynamicLogWithPP $ sjanssenPP,
+    manageHook 			= myManageHook,
     handleEventHook 		= myEventHook
 	
 }
