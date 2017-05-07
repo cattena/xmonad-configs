@@ -149,8 +149,8 @@ myLayout = mkToggle (NOBORDERS ?? FULL ?? EOT) $
            onWorkspace (myWorkspaces !! 5) vistasLayout $
            standardLayout
     where
-     standardLayout = tiled     ||| mirrorTiled ||| fullTiled ||| noBor
-     var1Layout     = fullTiled ||| tiled       ||| noBor
+     standardLayout = mirrorTiled ||| tiled     ||| fullTiled ||| noBor
+     var1Layout     = fullTiled ||| tiled       ||| mirrorTiled ||| noBor
      webLayout      = var1Layout
      fullTiled      = Tall nmaster delta (1/4)
      mirrorTiled    = Mirror . spacing 0 $ Tall nmaster delta ratio
@@ -175,20 +175,16 @@ myLayout = mkToggle (NOBORDERS ?? FULL ?? EOT) $
 
 myManageHook = manageDocks <+> composeAll
     [ className =? "MPlayer"             --> doFloat
-    , className =? "MPlayer"             --> doShift (myWorkspaces !! 2)
+    , className =? "MPlayer"             --> doShift (myWorkspaces !! 3)
     , className =? "Gimp"                --> doFloat
-    , className =? "Gimp"                --> doShift (myWorkspaces !! 2)
+    , className =? "Gimp"                --> doShift (myWorkspaces !! 5)
     , className =? "Nautilus"            --> doShift (myWorkspaces !! 3)
     , className =? "Zathura"             --> doShift (myWorkspaces !! 2)
-    , className =? "Dwb"                 --> doShift (myWorkspaces !! 1)
-    , className =? "Chromium"            --> doShift (myWorkspaces !! 1)
-    , className =? "Firefox"             --> doShift (myWorkspaces !! 1)
-    , className =? "Google-chrome"       --> doShift (myWorkspaces !! 1)
+    , className =? "Dwb"                 --> doShift (myWorkspaces !! 2)
+    , className =? "Chromium"            --> doShift (myWorkspaces !! 2)
+    , className =? "Firefox"             --> doShift (myWorkspaces !! 2)
+    , className =? "Google-chrome"       --> doShift (myWorkspaces !! 2)
     , className =? "Eclipse"             --> doShift (myWorkspaces !! 5)
-    , className =? "processing-app-Base" --> doShift (myWorkspaces !! 4)
-    , className =? "processing-app-Base" --> doFloat
-    , resource  =? "desktop_window"      --> doIgnore
-    , resource  =? "kdesktop"            --> doIgnore  
     , isFullscreen --> doFullFloat ]
 
 
