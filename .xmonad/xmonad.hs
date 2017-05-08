@@ -93,9 +93,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))    	-- Quit xmonad
     , ((modm,               xK_Return), spawn $ XMonad.terminal conf)   -- Application Spawning
     , ((modm .|. shiftMask, xK_r     ), spawn "xmonad --recompile && killall dzen2 && xmonad --restart")
---    , ((modm .|. shiftMask, xK_i     ), spawn "dwb")
+    , ((modm              , xK_i     ), spawn "dwb")
+    , ((modm .|. shiftMask, xK_i     ), spawn "firefox")
     , ((modm .|. shiftMask, xK_b     ), spawn "pcmanfm")
-    , ((modm 		  , xK_n     ), spawn "urxvt -e ncmpcpp")
+    , ((modm 		  , xK_n     ), spawn "urxvt -e ncmpc")
     , ((modm 		  , xK_m     ), spawn "/home/carlos/Scripts/bin/mpd/launchMPD.sh")
     , ((modm .|. shiftMask, xK_m     ), spawn "/home/carlos/Scripts/bin/mpd/stopMPD.sh")
     , ((0, 0x1008ff11), spawn "amixer -q set Master 5%- unmute")    	-- Alsa Multimedia Control
@@ -119,7 +120,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 --    [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
 --        | (key, sc) <- zip [xK_a, xK_s, xK_d] [0..]
 --        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
-
    
 ---
 --- Workspaces layout
@@ -138,7 +138,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 --				++ "^ca(4,xdotool key super+Left)"
 --				++ "^ca(1,xdotool key super+" ++ show n ++ ")"]
 
-myWorkspaces = ["Principal","www","Media","Misc","Vistas","Redacs"]
+myWorkspaces = ["1:Principal","2:www","3:Media","q:Misc","w:Vistas","e:Redacs"]
 
 ---
 --- Layouts
@@ -175,16 +175,15 @@ myLayout = mkToggle (NOBORDERS ?? FULL ?? EOT) $
 
 myManageHook = manageDocks <+> composeAll
     [ className =? "MPlayer"             --> doFloat
-    , className =? "MPlayer"             --> doShift (myWorkspaces !! 3)
+    , className =? "MPlayer"             --> doShift (myWorkspaces !! 2)
     , className =? "Gimp"                --> doFloat
-    , className =? "Gimp"                --> doShift (myWorkspaces !! 5)
-    , className =? "Nautilus"            --> doShift (myWorkspaces !! 3)
+    , className =? "Gimp"                --> doShift (myWorkspaces !! 4)
+    , className =? "Galculator"          --> doFloat
     , className =? "Zathura"             --> doShift (myWorkspaces !! 2)
-    , className =? "Dwb"                 --> doShift (myWorkspaces !! 2)
-    , className =? "Chromium"            --> doShift (myWorkspaces !! 2)
-    , className =? "Firefox"             --> doShift (myWorkspaces !! 2)
-    , className =? "Google-chrome"       --> doShift (myWorkspaces !! 2)
-    , className =? "Eclipse"             --> doShift (myWorkspaces !! 5)
+    , className =? "Dwb"                 --> doShift (myWorkspaces !! 1)
+    , className =? "Chromium"            --> doShift (myWorkspaces !! 1)
+    , className =? "Firefox"             --> doShift (myWorkspaces !! 1)
+    , (className =? "Firefox" <&&> resource =? "Dialog") --> doFloat
     , isFullscreen --> doFullFloat ]
 
 
